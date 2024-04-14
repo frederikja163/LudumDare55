@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LudumDare55", "LudumDare55\LudumDare55.csproj", "{FE65E140-FE39-497F-95E4-F0773EA7D3B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JAngine", "..\JAngine\JAngine\JAngine.csproj", "{E9CFE2B0-A3A1-4D8B-A70F-427A564DD0EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FE65E140-FE39-497F-95E4-F0773EA7D3B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE65E140-FE39-497F-95E4-F0773EA7D3B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE65E140-FE39-497F-95E4-F0773EA7D3B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE65E140-FE39-497F-95E4-F0773EA7D3B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9CFE2B0-A3A1-4D8B-A70F-427A564DD0EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9CFE2B0-A3A1-4D8B-A70F-427A564DD0EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9CFE2B0-A3A1-4D8B-A70F-427A564DD0EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9CFE2B0-A3A1-4D8B-A70F-427A564DD0EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
