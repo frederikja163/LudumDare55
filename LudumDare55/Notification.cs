@@ -21,11 +21,27 @@ public static class Notification
 
     public static void StartNotification(string message)
     {
-        _text.Value = message;
+        Task.Run(async () =>
+        {
+            for (int i = 0; i <= Application.AnimationTime; i++)
+            {
+                _text.Color = new Vector4(1, 1, 1, float.Lerp(0, 1, i / Application.AnimationTime));
+                Thread.Sleep(1000 / ObjectPool.TicksPerSecond);
+            }
+            _text.Value = message;
+        });
     }
 
     public static void StopNotification()
     {
-        _text.Value = "";
+        Task.Run(async () =>
+        {
+            for (int i = 0; i <= Application.AnimationTime; i++)
+            {
+                _text.Color = new Vector4(1, 1, 1, float.Lerp(1, 0, i / Application.AnimationTime));
+                Thread.Sleep(1000 / ObjectPool.TicksPerSecond);
+            }
+            _text.Value = "";
+        });
     }
 }

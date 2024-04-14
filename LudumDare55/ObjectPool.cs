@@ -9,16 +9,33 @@ public static class ObjectPool
         get => _tickSpeed;
         set => _tickSpeed = value;
     }
-    
-    public static bool Pause { get; set; }
 
-    private static readonly int TicksPerSecond = 60;
+    public static bool Pause
+    {
+        get
+        {
+            lock (Enemies)
+            {
+                return _pause;
+            }
+        }
+        set
+        {
+            lock (Enemies)
+            {
+                _pause = value;
+            }
+        }
+    }
+
+    public static readonly int TicksPerSecond = 60;
 
     private static int _ticks = 0;
     private static readonly List<Enemy> Enemies = new List<Enemy>();
     private static readonly List<Projectile> Projectiles = new List<Projectile>();
     private static IWave? _wave;
     private static int _tickSpeed = 1;
+    private static bool _pause;
 
     static ObjectPool()
     {
@@ -31,15 +48,7 @@ public static class ObjectPool
                 lock (Enemies)
                 {
                     _ticks += TickSpeed;
-                    foreach (IUpdateable updateable in Enemies.OfType<IUpdateable>().Concat(Projectiles))
-                    {
-                        updateable.Update(_ticks);
-                    }
-
-                    if (_wave is not null)
-                    {
-                        _wave.Update(_ticks);
-                    }
+                    OnUpdate?.Invoke(_ticks);
                 }
 
                 do {
@@ -55,6 +64,7 @@ public static class ObjectPool
         }).Start();
     }
 
+    public static event Action<int> OnUpdate;
     public static event Action OnPlayerDied;
     
     public static void PlayerDied()

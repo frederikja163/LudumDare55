@@ -41,6 +41,7 @@ public sealed class Enemy : IUpdateable
     public Enemy()
     {
         _element = Shape.CreateShape(out _shapeRef);
+        ObjectPool.OnUpdate += Update;
         ObjectPool.OnPlayerDied += () =>
         {
             if (_disabled)
@@ -119,9 +120,9 @@ public sealed class Enemy : IUpdateable
 
         if (_fadeBegin > 0)
         {
-            float fadeTime = (tick - _fadeBegin) / 10f;
+            float fadeTime = (tick - _fadeBegin) / Application.AnimationTime;
             _element.BackgroundColor = _element.BackgroundColor with { W = float.Lerp(1, 0, fadeTime) };
-            if ((tick - _fadeBegin) > 10f)
+            if ((tick - _fadeBegin) > Application.AnimationTime)
             {
                 _disabled = true;
                 _element.Width = Size.Pixels(0);

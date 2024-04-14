@@ -36,6 +36,7 @@ public class Wave : IWave
     public void Start(int tick)
     {
         _nextSpawnTick = tick;
+        ObjectPool.OnUpdate += Update;
     }
 
     public void Update(int tick)
@@ -47,6 +48,7 @@ public class Wave : IWave
                 if (Enemy.AliveEnemies == 0)
                 {
                     WaveDone?.Invoke();
+                    ObjectPool.OnUpdate -= Update;
                 }
                 return;
             }
@@ -84,6 +86,7 @@ public class WaitWave : IWave
         if (_startTicks + _ticks > tick)
         {
             WaveDone?.Invoke();
+            ObjectPool.OnUpdate -= Update;
         }
     }
 
@@ -91,6 +94,7 @@ public class WaitWave : IWave
     public void Start(int tick)
     {
         _startTicks = tick;
+        ObjectPool.OnUpdate += Update;
     }
 }
 
@@ -123,16 +127,18 @@ public class TutorialWave : IWave
         Player.OnShapeChange += PlayerOnOnShapeChange;
         ObjectPool.SpawnEnemy(100, _color, _shape);
         _startTick = tick;
+        ObjectPool.OnUpdate += Update;
     }
 
     private void PlayerOnOnShapeChange()
     {
         if (Player.Col == _color && Player.Type == _shape)
         {
+            ObjectPool.Pause = false;
             Notification.StopNotification();
             Player.OnShapeChange -= PlayerOnOnShapeChange;
-            ObjectPool.Pause = false;
             WaveDone?.Invoke();
+            ObjectPool.OnUpdate -= Update;
         }
     }
 }

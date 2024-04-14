@@ -27,13 +27,14 @@ public class Player
     private readonly Text _text;
     private readonly GuiElement _player;
     private readonly BufferDataReference<ShapeInstance> _shapeRef;
+    private ShapeType _lastType = ShapeType.Circle;
+    private Col _lastCol = Col.White;
     
     public Player()
     {
         _player = Shape.CreateShape(out _shapeRef);
         _player.Width = Size.Percentage(PlayerSize);
         _player.Height = _player.Width;
-
         
         GuiElement textField = new GuiElement(_player)
         {
@@ -60,12 +61,11 @@ public class Player
 
         _text.TextChanged += OnTextChanged;
     }
-    
+
     private void OnTextChanged()
     {
         if (Enum.TryParse<ShapeType>(_text.Value, true, out ShapeType type))
         {
-            _shapeRef.Data = new ShapeInstance(type);
             Type = type;
             _text.Value = "";
             OnShapeChanged();
@@ -82,11 +82,25 @@ public class Player
 
     private void OnShapeChanged()
     {
-        OnShapeChange?.Invoke();
-        foreach (Enemy enemy in Enemy.GetEnemies(Col, Type))
+        Task.Run(async () =>
         {
-            ObjectPool.SpawnProjectile(enemy, Col, Type);
-        }
+            if (_lastCol != Col || _lastType != Type)
+            {
+                for (int i = 0; i <= Application.AnimationTime; i++)
+                {
+                    _shapeRef.Data = new ShapeInstance(_lastType, Type, i / Application.AnimationTime);
+                    _player.BackgroundColor = Vector4.Lerp(Application.Colors[_lastCol], Application.Colors[Col], i / Application.AnimationTime);
+                    Thread.Sleep(1000 / ObjectPool.TicksPerSecond);
+                }
+            }
+            _lastCol = Col;
+            _lastType = Type;
+            foreach (Enemy enemy in Enemy.GetEnemies(Col, Type))
+            {
+                ObjectPool.SpawnProjectile(enemy, Col, Type);
+            }
+            OnShapeChange?.Invoke();
+        });
     }
 
     private void DeleteLast()

@@ -28,6 +28,7 @@ public sealed class Application
         { Col.Purple, new Vector4(0.8f, 0, 1f, 1) },
     };
 
+    public const float AnimationTime = 10;
     public static GuiElement Background { get; }
     public static Window Window { get; }
 

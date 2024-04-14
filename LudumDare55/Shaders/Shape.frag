@@ -2,7 +2,9 @@
 in vec2 fTexCoord;
 in vec4 fColor;
 flat in int fTexIndex;
-flat in int fShapeType;
+flat in int fShapeType1;
+flat in int fShapeType2;
+in float fShapeLerp;
 
 out vec4 Color;
 
@@ -93,39 +95,46 @@ float sdCross( in vec2 p, in vec2 b, float r )
     return sign(k)*length(max(w,0.0)) + r;
 }
 
+float getShape(in vec2 p, int shapeType){
+    float v;
+    switch (shapeType){
+        case 0:
+        v = sdCircle(p, 1.0);
+        break;
+        case 1:
+        v = sdRoundBox(p, vec2(1.0), vec4(0.3));
+        break;
+        case 2:
+        v = sdEquilateralTriangle(p, 1.0);
+        break;
+        case 3:
+        v = sdStar5(p, 1.0, 0.6);
+        break;
+        case 4:
+        v = sdHeart(p * 0.7 + vec2(0, 0.6));
+        break;
+        case 5:
+        v = sdHexagon(p, 1.0);
+        break;
+        case 6:
+        v = sdCross(p, vec2(1.0, 0.3), 0.0);
+        break;
+        case 7:
+        v = sdPentagon(p, 1.0);
+        break;
+        case 8:
+        v = sdOctagon(p, 1.0);
+        break;
+    }
+    return v;
+}
+
 void main() {
     vec2 p = fTexCoord * 4.0 - 2;
     
-    float v;
-    switch (fShapeType){
-        case 0:
-            v = sdCircle(p, 1.0);
-            break;
-        case 1:
-            v = sdRoundBox(p, vec2(1.0), vec4(0.3));
-            break;
-        case 2:
-            v = sdEquilateralTriangle(p, 1.0);
-            break;
-        case 3:
-            v = sdStar5(p, 1.0, 0.6);
-            break;
-        case 4:
-            v = sdHeart(p * 0.7 + vec2(0, 0.6));
-            break;
-        case 5:
-            v = sdHexagon(p, 1.0);
-            break;
-        case 6:
-            v = sdCross(p, vec2(1.0, 0.3), 0.0);
-            break;
-        case 7:
-            v = sdPentagon(p, 1.0);
-            break;
-        case 8:
-            v = sdOctagon(p, 1.0);
-            break;
-    }
+    float v1 = getShape(p, fShapeType1);
+    float v2 = getShape(p, fShapeType2);
+    float v = mix(v1, v2, fShapeLerp);
     v = abs(v);
     v = 0.05 / v-0.1*v;
     Color = vec4(1, 1, 1, v) * fColor;

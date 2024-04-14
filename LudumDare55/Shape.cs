@@ -20,12 +20,25 @@ public enum ShapeType
 
 public readonly struct ShapeInstance
 {
-    [ShaderAttribute("vShapeType")]
-    public readonly int ShapeType;
+    [ShaderAttribute("vShapeType1")]
+    public readonly int ShapeType1;
+    [ShaderAttribute("vShapeType2")]
+    public readonly int ShapeType2;
+    [ShaderAttribute("vShapeLerp")]
+    public readonly float ShapeLerp;
 
-    public ShapeInstance(ShapeType shapeType)
+    public ShapeInstance(ShapeType shapeType1, ShapeType shapeType2, float lerp)
     {
-        ShapeType = (int)shapeType;
+        ShapeType1 = (int)shapeType1;
+        ShapeType2 = (int)shapeType2;
+        ShapeLerp = lerp;
+    }
+    
+    public ShapeInstance(ShapeType shapeType1)
+    {
+        ShapeType1 = (int)shapeType1;
+        ShapeType2 = (int)shapeType1;
+        ShapeLerp = 0f;
     }
 }
 

@@ -11,12 +11,26 @@ public sealed class Text
     private readonly GuiElement _parent;
     private readonly Texture _texture;
     private string _text = "";
-    
+    private Vector4 _color = new Vector4(1, 1, 1, 1);
+
     public Text(GuiElement element, string text)
     {
         _parent = element;
         _texture = TextureManager.GetFontAtlas();
         Value = text;
+    }
+
+    public Vector4 Color
+    {
+        get => _color;
+        set
+        {
+            _color = value;
+            foreach (GuiElement character in _characters)
+            {
+                character.BackgroundColor = _color;
+            }
+        }
     }
 
     public event Action? TextChanged;
@@ -37,7 +51,7 @@ public sealed class Text
                     {
                         Height = _parent.Height,
                         TextureSize = Vector2.One / 16f,
-                        BackgroundColor = Vector4.One,
+                        BackgroundColor = Color,
                         Y = _parent.Y,
                     };
                     _characters.Add(character);

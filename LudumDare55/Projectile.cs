@@ -16,6 +16,7 @@ public sealed class Projectile : IUpdateable
     public Projectile()
     {
         _element = Shape.CreateShape(out _shapeRef);
+        ObjectPool.OnUpdate += Update;
     }
     
     public bool TrySpawn(int tick, Enemy enemy, Col color, ShapeType shape)
@@ -54,17 +55,17 @@ public sealed class Projectile : IUpdateable
 
         if (_fadeBegin == -1)
         {
-            float lifetime = (tick - _spawnTick) / (float)10;
+            float lifetime = (tick - _spawnTick) / (float)Application.AnimationTime;
             Vector2 pos = Vector2.Lerp(Vector2.One * 0.5f, _enemy.Pos, MathF.Min(1, lifetime));
             _element.X = Position.Percentage(pos.X);
             _element.Y = Position.Percentage(pos.Y);
             _element.Width = Size.Percentage(float.Lerp(Player.PlayerSize, _enemy.Scale, MathF.Min(1, lifetime)));
             _element.Height = _element.Width;
-            if (tick - _spawnTick >= 10)
+            if (tick - _spawnTick >= Application.AnimationTime)
             {
                 _enemy.BeginFade();
                 Player.Score += 1;
-                _fadeBegin = _spawnTick + 10;
+                _fadeBegin = _spawnTick + (int)Application.AnimationTime;
             }
 
             return;
@@ -72,7 +73,7 @@ public sealed class Projectile : IUpdateable
 
         if (_fadeBegin > 0)
         {
-            float fadeTime = (tick - _fadeBegin) / 10f;
+            float fadeTime = (tick - _fadeBegin) / Application.AnimationTime;
             _element.BackgroundColor = _element.BackgroundColor with { W = float.Lerp(1, 0, fadeTime) };
             if (fadeTime > 1f)
             {
