@@ -2,6 +2,7 @@ using JAngine;
 using JAngine.Rendering;
 using JAngine.Rendering.Gui;
 using JAngine.Rendering.OpenGL;
+using ShapeSummoner;
 
 namespace LudumDare55;
 
@@ -45,20 +46,20 @@ public readonly struct ShapeInstance
 public sealed class Shape
 {
     
-    private static readonly Shader? _shader;
+    public static readonly Shader Shader;
 
     static Shape()
     {
-        VertexShader vert = Resource.Load<VertexShader>(Application.Window, "LudumDare55.Shaders.Shape.vert");
-        FragmentShader frag = Resource.Load<FragmentShader>(Application.Window, "LudumDare55.Shaders.Shape.frag");
-        _shader = new Shader(Application.Window, "Shape", vert, frag);
+        VertexShader vert = Resource.Load<VertexShader>(Application.Window, "ShapeSummoner.Shaders.Shape.vert");
+        FragmentShader frag = Resource.Load<FragmentShader>(Application.Window, "ShapeSummoner.Shaders.Shape.frag");
+        Shader = new Shader(Application.Window, "Shape", vert, frag);
         vert.Dispose();
         frag.Dispose();
     }
 
     public static GuiElement CreateShape(out BufferDataReference<ShapeInstance> shapeRef)
     {
-        GuiElement element = new GuiElement(Application.Background, null, _shader)
+        GuiElement element = new GuiElement(Application.Background, null, Shader)
         {
             Width = Size.Pixels(0),
         };

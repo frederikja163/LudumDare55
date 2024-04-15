@@ -4,6 +4,7 @@ using JAngine.Rendering;
 using JAngine.Rendering.Gui;
 using JAngine.Rendering.OpenGL;
 using LudumDare55;
+using ShapeSummoner;
 
 internal static class Program
 {

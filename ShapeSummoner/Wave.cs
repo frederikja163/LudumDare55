@@ -1,3 +1,5 @@
+using ShapeSummoner;
+
 namespace LudumDare55;
 
 public interface IWave : IUpdateable
@@ -43,7 +45,7 @@ public class Wave : IWave
         WaveDone = null;
     }
 
-    public int WaveNumber { get; } = WaveCount++;
+    public int WaveNumber { get; } = ++WaveCount;
 
     public void Update(int tick)
     {
@@ -108,6 +110,7 @@ public class TutorialWave : IWave
     private readonly Col _color;
     private readonly ShapeType _shape;
     private int _startTick;
+    private bool _disabled = true;
     public int WaveNumber { get; } = Wave.WaveCount;
 
     public TutorialWave(string message, Col color, ShapeType shape)
@@ -119,6 +122,11 @@ public class TutorialWave : IWave
     
     public void Update(int tick)
     {
+        if (_disabled)
+        {
+            return;
+        }
+        
         if (tick - _startTick > 60)
         {
             ObjectPool.Pause = true;
@@ -132,12 +140,14 @@ public class TutorialWave : IWave
         Player.OnShapeChange += PlayerOnShapeChange;
         ObjectPool.SpawnEnemy(100, _color, _shape);
         _startTick = tick;
+        _disabled = false;
     }
 
     private void PlayerOnShapeChange()
     {
         if (Player.Col == _color && Player.Type == _shape)
         {
+            _disabled = true;
             ObjectPool.Pause = false;
             Notification.StopNotification();
             Player.OnShapeChange -= PlayerOnShapeChange;

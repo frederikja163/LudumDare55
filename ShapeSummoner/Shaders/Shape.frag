@@ -6,6 +6,8 @@ flat in int fShapeType1;
 flat in int fShapeType2;
 in float fShapeLerp;
 
+uniform int uTime;
+
 out vec4 Color;
 
 float dot2( in vec2 v ) { return dot(v,v); }
@@ -131,7 +133,7 @@ float getShape(in vec2 p, int shapeType){
 
 void main() {
     vec2 p = fTexCoord * 4.0 - 2;
-    
+
     float v1 = getShape(p, fShapeType1);
     float v2 = getShape(p, fShapeType2);
     float v = mix(v1, v2, fShapeLerp);

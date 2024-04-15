@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Numerics;
 using JAngine.Rendering;
 using JAngine.Rendering.OpenGL;
+using ShapeSummoner;
 
 namespace LudumDare55;
 

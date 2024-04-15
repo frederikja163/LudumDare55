@@ -1,10 +1,9 @@
 using System.Numerics;
-using JAngine;
 using JAngine.Rendering;
 using JAngine.Rendering.Gui;
-using JAngine.Rendering.OpenGL;
+using LudumDare55;
 
-namespace LudumDare55;
+namespace ShapeSummoner;
 
 public enum Col {
     White = 0,
@@ -35,7 +34,7 @@ public sealed class Application
     static Application()
     {
         
-        Window = new Window("Shape summoner", 1280, 720);
+        Window = new Window("ShapeSummoner", 1280, 720);
         
         Background = new GuiElement(Window)
         {
@@ -74,7 +73,7 @@ public sealed class Application
         new Wave(Col.Red, ShapeType.Square, 30, 2.5f),
         
         new TutorialWave("No more colors or shapes left", Col.Purple, ShapeType.Cross),
-        new Wave(Col.Purple, ShapeType.Cross, 1, 1.5f),
+        new Wave(Col.Purple, ShapeType.Cross, 30, 1.5f),
     ];
 
     public Application()
@@ -123,7 +122,7 @@ public sealed class Application
     {
         while (i >= _waves.Count)
         {
-            _waves.Add(new WaitWave(180));
+            _waves.Add(new WaitWave(300));
             if (i % 10 != 0)
             {
                 _waves.Add(new Wave(Col.Purple, ShapeType.Cross, (int)MathF.Floor((i + 1f) / 10) * 10 + 10,
