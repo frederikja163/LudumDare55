@@ -8,6 +8,17 @@ namespace LudumDare55;
 public class Player
 {
     public const float PlayerSize = 0.3f;
+    private static int _wave;
+    private static Text _waveText;
+    public static int Wave
+    {
+        get => _wave;
+        set
+        {
+            _wave = value;
+            _waveText.Value = $"Wave: {value}";
+        }
+    }
     private static int _score;
     private static Text _scoreText;
     public static int Score
@@ -46,9 +57,16 @@ public class Player
         {
             BackgroundColor = new Vector4(0, 0, 0, 0),
             Height = Size.Pixels(10),
-            Y = Position.Bottom(textField) - 12,
+            Y = Position.Bottom(textField) - 15,
         };
         _scoreText = new Text(scoreText, "Score: 0");
+        GuiElement waveText = new GuiElement(_player)
+        {
+            BackgroundColor = new Vector4(0, 0, 0, 0),
+            Height = Size.Pixels(10),
+            Y = Position.Top(textField) + 15,
+        };
+        _waveText = new Text(waveText, "Wave: 0");
 
         Application.Window.OnTextTyped += OnWindowOnTextTyped;
         

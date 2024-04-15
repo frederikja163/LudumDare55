@@ -111,6 +111,7 @@ public sealed class Application
                     }
                 } while (localCopy);
 
+                Player.Score = 0;
                 StartWave(0);
             });
         };
@@ -133,6 +134,8 @@ public sealed class Application
                 _waves.Add(new Wave(Col.Blue, ShapeType.Triangle, (int)MathF.Floor((i + 1f) / 10) * 10 + 10, (int)(i / 10f) * 0.5f + 2));
             }
         }
+
+        Player.Wave = _waves[i].WaveNumber;
         ObjectPool.SetWave(_waves[i]);
         _waves[i].WaveDone += StartWavePlusOne;
 
