@@ -71,34 +71,73 @@ public sealed class Application
         new TutorialWave("Purple cross - You almost made it to wave 10!", Col.Purple, ShapeType.Cross),
         new Wave(Col.Purple, ShapeType.Cross, 20, 1.25f),
         new TutorialWave("Now we are gonna go fast", Col.Red, ShapeType.Square),
-        new Wave(Col.Red, ShapeType.Square, 40, 2.5f),
+        new Wave(Col.Red, ShapeType.Square, 30, 2.5f),
         
         new TutorialWave("No more colors or shapes left", Col.Purple, ShapeType.Cross),
-        new Wave(Col.Purple, ShapeType.Cross, 40, 1.25f),
+        new Wave(Col.Purple, ShapeType.Cross, 1, 1.5f),
     ];
 
     public Application()
     {
         _player = new Player();
 
-        ObjectPool.OnPlayerDied += () => Notification.StartNotification("You died! Restart the game to play again.");
+        bool waitingForSpace = true;
+        Window.AddKeyBinding(Key.Space | Key.Press, () =>
+        {
+            lock (this)
+            {
+                waitingForSpace = false;
+            }
+        });
+
+        ObjectPool.OnPlayerDied += () =>
+        {
+            Task.Run(async () =>
+            {
+                lock (this)
+                {
+                    waitingForSpace = true;
+                }
+                bool localCopy;
+                do
+                {
+                    Notification.StartNotification("You died! Press space to try again.");
+                    await Task.Delay(1000);
+                    Notification.StopNotification();
+                    await Task.Delay(1000);
+                    lock (this)
+                    {
+                        localCopy = waitingForSpace;
+                    }
+                } while (localCopy);
+
+                StartWave(0);
+            });
+        };
 
         StartWave(0);
     }
 
     private void StartWave(int i)
     {
-        if (i >= _waves.Count)
+        while (i >= _waves.Count)
         {
-            Notification.StartNotification("Thanks for playing, no waves left!");
-            return;
+            _waves.Add(new WaitWave(180));
+            if (i % 10 != 0)
+            {
+                _waves.Add(new Wave(Col.Purple, ShapeType.Cross, (int)MathF.Floor((i + 1f) / 10) * 10 + 10,
+                    (int)(i / 10f) * 0.25f + 1));
+            }
+            else
+            {
+                _waves.Add(new Wave(Col.Blue, ShapeType.Triangle, (int)MathF.Floor((i + 1f) / 10) * 10 + 10, (int)(i / 10f) * 0.5f + 2));
+            }
         }
         ObjectPool.SetWave(_waves[i]);
         _waves[i].WaveDone += StartWavePlusOne;
 
         void StartWavePlusOne()
         {
-            _waves[i].WaveDone -= StartWavePlusOne;
             StartWave(i + 1);
         }
     }

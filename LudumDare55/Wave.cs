@@ -5,10 +5,13 @@ public interface IWave : IUpdateable
     event Action WaveDone;
 
     void Start(int tick);
+    
+    int WaveNumber { get; }
 }
 
 public class Wave : IWave
 {
+    public static int WaveCount { get; private set; }
     private const int DefaultTicksBetweenSpawn = 100;
     private const int Speed = 1600;
     
@@ -31,13 +34,16 @@ public class Wave : IWave
     {
     }
 
-    public event Action WaveDone;
+    public event Action? WaveDone;
 
     public void Start(int tick)
     {
         _nextSpawnTick = tick;
-        ObjectPool.OnUpdate += Update;
+        _spawnedEnemies = 0;
+        WaveDone = null;
     }
+
+    public int WaveNumber { get; } = WaveCount++;
 
     public void Update(int tick)
     {
@@ -48,7 +54,6 @@ public class Wave : IWave
                 if (Enemy.AliveEnemies == 0)
                 {
                     WaveDone?.Invoke();
-                    ObjectPool.OnUpdate -= Update;
                 }
                 return;
             }
@@ -75,6 +80,7 @@ public class WaitWave : IWave
 {
     private readonly int _ticks;
     private int _startTicks = 0;
+    public int WaveNumber { get; } = Wave.WaveCount;
     
     public WaitWave(int ticks = 0) : base()
     {
@@ -86,7 +92,6 @@ public class WaitWave : IWave
         if (_startTicks + _ticks > tick)
         {
             WaveDone?.Invoke();
-            ObjectPool.OnUpdate -= Update;
         }
     }
 
@@ -94,7 +99,6 @@ public class WaitWave : IWave
     public void Start(int tick)
     {
         _startTicks = tick;
-        ObjectPool.OnUpdate += Update;
     }
 }
 
@@ -104,6 +108,7 @@ public class TutorialWave : IWave
     private readonly Col _color;
     private readonly ShapeType _shape;
     private int _startTick;
+    public int WaveNumber { get; } = Wave.WaveCount;
 
     public TutorialWave(string message, Col color, ShapeType shape)
     {
@@ -124,21 +129,19 @@ public class TutorialWave : IWave
     public void Start(int tick)
     {
         Notification.StartNotification(_message);
-        Player.OnShapeChange += PlayerOnOnShapeChange;
+        Player.OnShapeChange += PlayerOnShapeChange;
         ObjectPool.SpawnEnemy(100, _color, _shape);
         _startTick = tick;
-        ObjectPool.OnUpdate += Update;
     }
 
-    private void PlayerOnOnShapeChange()
+    private void PlayerOnShapeChange()
     {
         if (Player.Col == _color && Player.Type == _shape)
         {
             ObjectPool.Pause = false;
             Notification.StopNotification();
-            Player.OnShapeChange -= PlayerOnOnShapeChange;
+            Player.OnShapeChange -= PlayerOnShapeChange;
             WaveDone?.Invoke();
-            ObjectPool.OnUpdate -= Update;
         }
     }
 }

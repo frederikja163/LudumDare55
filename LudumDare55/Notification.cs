@@ -34,6 +34,11 @@ public static class Notification
 
     public static void StopNotification()
     {
+        if (string.IsNullOrEmpty(_text.Value))
+        {
+            return;
+        }
+        
         Task.Run(async () =>
         {
             for (int i = 0; i <= Application.AnimationTime; i++)

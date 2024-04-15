@@ -48,7 +48,15 @@ public static class ObjectPool
                 lock (Enemies)
                 {
                     _ticks += TickSpeed;
-                    OnUpdate?.Invoke(_ticks);
+                    foreach (IUpdateable updateable in Enemies.OfType<IUpdateable>().Concat(Projectiles))
+                    {
+                        updateable.Update(_ticks);
+                    }
+
+                    if (_wave is not null)
+                    {
+                        _wave.Update(_ticks);
+                    }
                 }
 
                 do {
@@ -63,8 +71,6 @@ public static class ObjectPool
             }
         }).Start();
     }
-
-    public static event Action<int> OnUpdate;
     public static event Action OnPlayerDied;
     
     public static void PlayerDied()

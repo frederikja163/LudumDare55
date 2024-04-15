@@ -41,7 +41,6 @@ public sealed class Enemy : IUpdateable
     public Enemy()
     {
         _element = Shape.CreateShape(out _shapeRef);
-        ObjectPool.OnUpdate += Update;
         ObjectPool.OnPlayerDied += () =>
         {
             if (_disabled)

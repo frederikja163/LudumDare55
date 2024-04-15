@@ -16,7 +16,6 @@ public sealed class Projectile : IUpdateable
     public Projectile()
     {
         _element = Shape.CreateShape(out _shapeRef);
-        ObjectPool.OnUpdate += Update;
     }
     
     public bool TrySpawn(int tick, Enemy enemy, Col color, ShapeType shape)
