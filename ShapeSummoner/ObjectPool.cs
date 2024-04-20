@@ -61,7 +61,6 @@ public static class ObjectPool
                 }
 
                 do {
-                    Shape.Shader.SetUniform("uTime", _ticks);
                     TimeSpan delay = TimeSpan.FromSeconds(1f / TicksPerSecond) - stopwatch.Elapsed;
                     if (delay > TimeSpan.Zero)
                     {
